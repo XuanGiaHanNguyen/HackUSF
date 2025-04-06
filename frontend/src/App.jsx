@@ -4,11 +4,10 @@ import './App.css'
 
 import Landing from './pages/Landing'
 import AboutUs from './components/AboutUs'
-import Main from './pages/Main'
+import Step1 from './pages/Step1'
 import Instructions from './components/Instructions'
 import LoadingPage from './pages/loading/Loading'
-// import Survey from './pages/ParentSurvey'
-import Surland from './components/SurveyLanding'
+import CancerCareFinder from './pages/map/FindCenter'
 // import ToMain from './components/ToMain'
 import LoadingMainPage from './pages/loading/LoadingToMain'
 import DoneMain from './components/DoneMain'
@@ -20,21 +19,12 @@ function App () {
 
         <Route path="/" element={<Landing />}>
           <Route path="/aboutus" element={<AboutUs />} />
-          <Route path="/parent" element={<Surland />} />
         </Route>
 
-        <Route path="/main" element={<Main />}>
-          <Route path="/main/instructions" element={<Instructions />} />
-          <Route path="/main/workdone" element={<DoneMain />} />
-        </Route>
-
+        <Route path="/step1" element={<Step1 />}></Route>
         <Route path="/loading" element={<LoadingPage />} />
+        <Route path="/findcenter" element={<CancerCareFinder />}></Route>
         <Route path="/loadingtomain" element={<LoadingMainPage />} />
-
-        {/* <Route path="/survey" element={<Survey />}>
-          <Route path="/survey/ToMain" element={<ToMain />} />
-        </Route>
-         */} 
 
       </Routes>
     </BrowserRouter>
