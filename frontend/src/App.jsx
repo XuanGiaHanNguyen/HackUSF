@@ -4,43 +4,44 @@ import './App.css'
 
 import Landing from './pages/Landing'
 import AboutUs from './components/AboutUs'
-import Main from './pages/Main'
+import UploadPic from './pages/Upload'
 import Instructions from './components/Instructions'
 import LoadingPage from './pages/loading/Loading'
-// import Survey from './pages/ParentSurvey'
+import Step1 from './pages/Step1'
 import Surland from './components/SurveyLanding'
-// import ToMain from './components/ToMain'
-import LoadingMainPage from './pages/loading/LoadingToMain'
-import DoneMain from './components/DoneMain'
-import HospitalFinder from './pages/map/Map'
+import NotCancerNoti from './pages/NotCancerNoti'
+import LoadingMainPage from './pages/loading/LoadingToResult'
+import HospitalFinder from './pages/map/LocationFinder'
+import Survey from './pages/Survey'
+import SkinAnalysisResults from './pages/Result'
+import SearchLocation from './pages/map/SearchLocation'
 
 function App () {
+
   const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  
-  console.log("Google Maps API Key:", googleMapsApiKey); 
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/map' element={<HospitalFinder googleMapsApiKey={googleMapsApiKey}/>}/>
         <Route path="/" element={<Landing />}>
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/parent" element={<Surland />} />
         </Route>
 
-        <Route path="/main" element={<Main />}>
-          <Route path="/main/instructions" element={<Instructions />} />
-          <Route path="/main/workdone" element={<DoneMain />} />
+        <Route path="/Upload" element={<UploadPic />}>
+          <Route path="/Upload/instructions" element={<Instructions />} />
         </Route>
 
+        <Route path="/step1" element={<Step1 />}></Route>
         <Route path="/loading" element={<LoadingPage />} />
-        <Route path="/loadingtomain" element={<LoadingMainPage />} />
+        <Route path="/loadingtoresult" element={<LoadingMainPage />} />
 
-        {/* <Route path="/survey" element={<Survey />}>
-          <Route path="/survey/ToMain" element={<ToMain />} />
-        </Route>
-         */} 
-
+        <Route path='/map' element={<SearchLocation googleMapsApiKey={googleMapsApiKey}/>}/>
+        <Route path="/step1" element={<Step1 />}></Route>
+        <Route path="/survey" element={<Survey />}></Route>
+        <Route path="/result" element={<SkinAnalysisResults />}></Route>
+        <Route path="/address" element={<HospitalFinder />}></Route>
+        <Route path="/noticenocancer" element={<NotCancerNoti />}></Route>
       </Routes>
     </BrowserRouter>
   )

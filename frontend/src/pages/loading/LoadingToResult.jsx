@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
+import { IconIcon } from "../../assets/icon"
 import { useNavigate } from "react-router-dom" // Import if using React Router
 
-export default function LoadingPage() {
+export default function LoadingMainPage() {
   const date = new Date()
   const year = date.getFullYear()
   const [loadingProgress, setLoadingProgress] = useState(0)
@@ -28,7 +29,7 @@ export default function LoadingPage() {
   useEffect(() => {
     const navigationTimer = setTimeout(() => {
       // If using React Router:
-      navigate('/step1') 
+      navigate('/result') 
       
       // If not using React Router, use window.location instead:
       // window.location.href = '/destination-page'
@@ -76,7 +77,7 @@ export default function LoadingPage() {
         </div>
       </div>
 
-      <div className="absolute bottom-6 text-gray-500 text-sm">© {year} PuzzlePath. All rights reserved.</div>
+      <div className="absolute bottom-6 text-gray-500 text-sm">© {year} SkinIntel. All rights reserved.</div>
     </div>
   )
 }
