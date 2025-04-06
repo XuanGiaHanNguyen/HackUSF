@@ -61,6 +61,7 @@ const Surland = ({ setShowSurvey, setUserName }) => {
         transition={{ duration: 0.3 }}
         className="bg-[#efe8e0] rounded-3xl shadow-lg min-w-lg w-1/3 max-w-4xl relative"
       >
+       
         <div className="px-8 py-10 flex flex-col">
           <div className="flex flex-row justify-end pr-3">
             <div className="flex-3 flex flex-col text-center align-start justify-center">
@@ -68,6 +69,7 @@ const Surland = ({ setShowSurvey, setUserName }) => {
                 Hello! My name is <span className="text-[#ab7d00]">Puffer</span>
               </p>
             </div>
+
             <img src={char} width={100} className="flex-1" />
           </div>
 
@@ -97,7 +99,7 @@ const Surland = ({ setShowSurvey, setUserName }) => {
         </div>
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-export default Surland;
+export default Surland

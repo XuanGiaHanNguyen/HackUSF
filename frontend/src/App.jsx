@@ -4,27 +4,44 @@ import './App.css'
 
 import Landing from './pages/Landing'
 import AboutUs from './components/AboutUs'
-import Step1 from './pages/Step1'
+import UploadPic from './pages/Upload'
 import Instructions from './components/Instructions'
 import LoadingPage from './pages/loading/Loading'
-import CancerCareFinder from './pages/map/FindCenter'
-// import ToMain from './components/ToMain'
-import LoadingMainPage from './pages/loading/LoadingToMain'
-import DoneMain from './components/DoneMain'
+import Step1 from './pages/Step1'
+import Surland from './components/SurveyLanding'
+import NotCancerNoti from './pages/NotCancerNoti'
+
+import LoadingMainPage from './pages/loading/LoadingToResult'
+import HospitalFinder from './pages/map/LocationFinder'
+import Survey from './pages/Survey'
 
 function App () {
+
+  const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  
+  console.log("Google Maps API Key:", googleMapsApiKey); 
+
   return (
     <BrowserRouter>
       <Routes>
-
         <Route path="/" element={<Landing />}>
           <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/parent" element={<Surland />} />
+        </Route>
+
+        <Route path="/Upload" element={<UploadPic />}>
+          <Route path="/Upload/instructions" element={<Instructions />} />
         </Route>
 
         <Route path="/step1" element={<Step1 />}></Route>
         <Route path="/loading" element={<LoadingPage />} />
-        <Route path="/findcenter" element={<CancerCareFinder />}></Route>
-        <Route path="/loadingtomain" element={<LoadingMainPage />} />
+        <Route path="/findcenter" element={<HospitalFinder />}></Route>
+        <Route path="/loadingtoresult" element={<LoadingMainPage />} />
+
+        <Route path='/map' element={<HospitalFinder googleMapsApiKey={googleMapsApiKey}/>}/>
+        <Route path="/step1" element={<Step1 />}></Route>
+        <Route path="/survey" element={<Survey />}></Route>
+        <Route path="/noticenocancer" element={<NotCancerNoti />}></Route>
 
       </Routes>
     </BrowserRouter>

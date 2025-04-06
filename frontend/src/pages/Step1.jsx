@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import step1bg from '../assets/step1.jpg';
+import step1bg from '../assets/step1.png';
 import { NextIcon, Icon2Icon } from '../assets/icon';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -26,7 +26,7 @@ const Step1 = () => {
           <h2 className="font-bold text-3xl text-[#7c5b00]">SkinIntel</h2>
         </div>
         <div className="flex flex-row gap-5">
-          <div className="bg-[#7c5b00] rounded-lg px-6 py-2 text-sm text-white font-semibold transition-transform duration-300 shadow-smtransition-transform duration-200 hover:scale-105 shadow-sm cursor-pointer">
+          <div className="bg-[#7c5b00] rounded-lg px-6 py-2 text-sm text-white font-semibold duration-300 shadow-sm transition-transform hover:scale-105 cursor-pointer">
             <Link to="/">Home</Link>
           </div>
         </div>
@@ -38,14 +38,14 @@ const Step1 = () => {
           <div className='text-2xl'>Take or upload a clear image of your skin lesion so we can analyze it properly. Make sure it's well-lit and in focus!</div>
         </div>
       </div>
-      
+
       <div 
-        className='absolute rounded-full p-3 hover:bg-zinc-200 transition-all duration-300 right-6 top-1/2 transform -translate-y-1/2 cursor-pointer'
-        onClick={() => navigate('/step1_upload')}
+        className='absolute rounded-full p-3 animate-bounce hover:bg-zinc-200 transition-all duration-300 right-6 top-1/2 transform -translate-y-1/2 cursor-pointer'
+        onClick={() => navigate('/Upload')}
       >
         {NextIcon}
       </div>
-      
+
       <div className='w-full absolute bottom-6 text-gray-500 text-sm text-center'>© All images are encrypted and securely stored.</div>
     </div>
   );
