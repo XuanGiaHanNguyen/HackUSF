@@ -13,7 +13,10 @@ import NotCancerNoti from './pages/NotCancerNoti'
 
 import LoadingMainPage from './pages/loading/LoadingToResult'
 import HospitalFinder from './pages/map/LocationFinder'
+import SearchLocation from './pages/map/SearchLocation'
 import Survey from './pages/Survey'
+
+import SkinAnalysisResults from './pages/Result'
 
 function App () {
 
@@ -25,7 +28,7 @@ function App () {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />}>
-          <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="aboutus" element={<AboutUs />} />
           <Route path="/parent" element={<Surland />} />
         </Route>
 
@@ -38,10 +41,18 @@ function App () {
         <Route path="/findcenter" element={<HospitalFinder />}></Route>
         <Route path="/loadingtoresult" element={<LoadingMainPage />} />
 
+<<<<<<< HEAD
         <Route path='/map' element={<HospitalFinder googleMapsApiKey={googleMapsApiKey}/>}/>
+=======
+        <Route path='/address' element={<HospitalFinder googleMapsApiKey={googleMapsApiKey}/>}/>
+        <Route path='/map' element={<SearchLocation googleMapsApiKey={googleMapsApiKey}/>}/>
+
+>>>>>>> e05b2d5d9fecad2f7da327a1c6177a2bc4a7d1bc
         <Route path="/step1" element={<Step1 />}></Route>
         <Route path="/survey" element={<Survey />}></Route>
         <Route path="/noticenocancer" element={<NotCancerNoti />}></Route>
+
+        <Route path="/result" element={<SkinAnalysisResults />}></Route>
 
       </Routes>
     </BrowserRouter>

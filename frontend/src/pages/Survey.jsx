@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon2Icon } from '../assets/icon';
 import { Link } from 'react-router-dom';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
+=======
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+>>>>>>> e05b2d5d9fecad2f7da327a1c6177a2bc4a7d1bc
 const questions = [
   {
     id: "q1",
@@ -228,6 +233,7 @@ function Survey() {
 
   if (!showResults) {
     return (
+<<<<<<< HEAD
       <div className="min-h-screen bg-gradient-to-b from-neutral-50 to-[rgba(235,228,220,255)] flex flex-col items-center justify-center">
         {/* Header with increased padding-x and reduced padding-y */}
         <div className="flex flex-row justify-between align-between w-full py-3 px-6 md:px-10 max-w-screen-lg mx-auto">
@@ -243,6 +249,11 @@ function Survey() {
         </div>
         
         <motion.h1
+=======
+      
+      <div className="min-h-screen bg-gradient-to-b from-neutral-100 to-[rgba(235,228,220,255)] p-4 md:p-8 flex flex-col items-center justify-center">
+        <motion.h1 
+>>>>>>> e05b2d5d9fecad2f7da327a1c6177a2bc4a7d1bc
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-2xl md:text-3xl font-bold my-4 text-center text-[#4a3600] tracking-tight px-4"
