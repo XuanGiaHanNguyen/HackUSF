@@ -12,12 +12,18 @@ import Surland from './components/SurveyLanding'
 // import ToMain from './components/ToMain'
 import LoadingMainPage from './pages/loading/LoadingToMain'
 import DoneMain from './components/DoneMain'
+import HospitalFinder from './pages/map/Map'
 
 function App () {
+
+  const googleMapsApiKey = "AIzaSyAX7CTE0wrxlIVAUUPIvFbGuvSy3PuJXvc";
+  
+  console.log("Google Maps API Key:", googleMapsApiKey); 
+
   return (
     <BrowserRouter>
       <Routes>
-
+        <Route path='/map' element={<HospitalFinder/>}/>
         <Route path="/" element={<Landing />}>
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/parent" element={<Surland />} />

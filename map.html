@@ -1,0 +1,947 @@
+{% extends "layout.html" %}
+
+{% block title %}Find Nearby Cancer Treatment Centers{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-5">
+    <h1 class="mb-4">Find Nearby Cancer Treatment Centers</h1>
+    
+    <div class="row">
+        <!-- Left Column: Search, Filters, and Facilities -->
+        <div class="col-md-3">
+            <!-- Search Section -->
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Your Location</h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">Allow location access to find cancer centers near you, or enter your location manually.</p>
+                    
+                    <div class="d-grid gap-2">
+                        <button id="getLocationBtn" class="btn btn-primary">
+                            <i class="bi bi-geo-alt-fill me-2"></i> Use My Current Location
+                        </button>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <label for="addressInput" class="form-label">Or enter your address:</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="addressInput" placeholder="Enter your address">
+                            <button class="btn btn-outline-secondary" type="button" id="searchAddressBtn">Search</button>
+                        </div>
+                    </div>
+                    
+                    <div id="locationInfo" class="alert alert-info d-none">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <span id="locationText">Location detected</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filters Section -->
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">Search Filters</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="searchRadius" class="form-label">Search radius (km)</label>
+                        <input type="range" class="form-range" id="searchRadius" min="1" max="50" value="10" oninput="document.getElementById('radiusValue').textContent = this.value">
+                        <div class="text-end"><span id="radiusValue">10</span> km</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Facility Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="hospital" id="hospitalCheck" checked>
+                            <label class="form-check-label" for="hospitalCheck">
+                                Hospitals
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="cancer_center" id="cancerCenterCheck" checked>
+                            <label class="form-check-label" for="cancerCenterCheck">
+                                Cancer Treatment Centers
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="dermatologist" id="dermatologistCheck" checked>
+                            <label class="form-check-label" for="dermatologistCheck">
+                                Dermatologists
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Route Options</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="traffic" id="trafficCheck" checked>
+                            <label class="form-check-label" for="trafficCheck">
+                                Consider real-time traffic
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="alternatives" id="alternativesCheck" checked>
+                            <label class="form-check-label" for="alternativesCheck">
+                                Show alternative routes
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="travelMode" id="drivingMode" value="DRIVING" checked>
+                            <label class="form-check-label" for="drivingMode">
+                                <i class="fas fa-car me-1"></i> Driving
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="travelMode" id="walkingMode" value="WALKING">
+                            <label class="form-check-label" for="walkingMode">
+                                <i class="fas fa-walking me-1"></i> Walking
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="travelMode" id="transitMode" value="TRANSIT">
+                            <label class="form-check-label" for="transitMode">
+                                <i class="fas fa-bus me-1"></i> Public Transit
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button id="findNearbyBtn" class="btn btn-info">
+                            <i class="bi bi-search me-2"></i> Find Nearby Facilities
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Facilities List Section -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Nearby Facilities</h3>
+                </div>
+                <div class="card-body">
+                    <div id="facilitiesList" style="max-height: 500px; overflow-y: auto;">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            Use the search filters to find facilities near you.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('index') }}" class="btn btn-primary">Return to Home</a>
+            </div>
+        </div>
+        
+        <!-- Right Column: Map and Route Details Side by Side -->
+        <div class="col-md-9">
+            <div class="row">
+                <!-- Map Section -->
+                <div class="col-md-7 mb-3">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Map</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="map" style="width: 100%; height: 700px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Route Details Section -->
+                <div class="col-md-5 mb-3">
+                    <div id="routeDetails" class="card h-100 d-none">
+                        <div class="card-header bg-success text-white">
+                            <h3 class="mb-0">Route Details</h3>
+                        </div>
+                        <div class="card-body" style="max-height: 700px; overflow-y: auto;">
+                            <!-- Route Info -->
+                            <div id="routeInfo"></div>
+                            
+                            <!-- Alternative Routes -->
+                            <div id="routeAlternatives" class="mt-3"></div>
+                            
+                            <!-- Step-by-Step Directions -->
+                            <div id="routeDirections" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Google Maps JavaScript -->
+<script>
+    let map;
+    let userMarker;
+    let facilityMarkers = [];
+    let userLocation = null;
+    let directionsService;
+    let directionsRenderer;
+    let infoWindow;
+    let currentRoute = null;
+    let alternativeRoutes = [];
+    let routeColors = ['#4285F4', '#EA4335', '#FBBC05']; // Google colors for routes
+    let routePolylines = [];
+    let autocomplete;
+
+    // Initialize Google Maps
+    function initMap() {
+        // Default center (will be updated with user location)
+        const defaultCenter = { lat: 40.7128, lng: -74.0060 }; // New York
+        
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 10,
+            center: defaultCenter,
+            mapTypeControl: true,
+            streetViewControl: false,
+            fullscreenControl: true,
+        });
+        
+        // Initialize directions service and renderer
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+            map: map,
+            suppressMarkers: false,
+            preserveViewport: false,
+            polylineOptions: {
+                strokeColor: '#4285F4',
+                strokeOpacity: 0.8,
+                strokeWeight: 5
+            }
+        });
+        
+        // Initialize info window
+        infoWindow = new google.maps.InfoWindow();
+        
+        // Enable the find nearby button only when a location is set
+        document.getElementById('findNearbyBtn').disabled = true;
+        
+        // Initialize Google Places Autocomplete for address input
+        const addressInput = document.getElementById('addressInput');
+        autocomplete = new google.maps.places.Autocomplete(addressInput, {
+            types: ['address'],
+            fields: ['formatted_address', 'geometry']
+        });
+        
+        // When a place is selected from the autocomplete dropdown
+        autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
+            
+            if (!place.geometry) {
+                // User entered the name of a place that was not suggested
+                document.getElementById('locationInfo').classList.remove('d-none');
+                document.getElementById('locationInfo').classList.remove('alert-success');
+                document.getElementById('locationInfo').classList.add('alert-danger');
+                document.getElementById('locationText').textContent = 'No location found for this address. Please select an address from the dropdown suggestions.';
+                return;
+            }
+            
+            // Get the location from the place
+            userLocation = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            
+            // Update map
+            updateUserLocationOnMap();
+            
+            // Update info text
+            document.getElementById('locationInfo').classList.remove('d-none');
+            document.getElementById('locationInfo').classList.remove('alert-danger');
+            document.getElementById('locationInfo').classList.add('alert-success');
+            document.getElementById('locationText').textContent = 'Location set to: ' + place.formatted_address;
+            
+            // Enable the find nearby button
+            document.getElementById('findNearbyBtn').disabled = false;
+        });
+    }
+    
+    // Handle get location button click
+    document.getElementById('getLocationBtn').addEventListener('click', function() {
+        if (navigator.geolocation) {
+            document.getElementById('locationInfo').classList.remove('d-none');
+            document.getElementById('locationInfo').classList.remove('alert-danger');
+            document.getElementById('locationInfo').classList.add('alert-info');
+            document.getElementById('locationText').textContent = 'Getting your location...';
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    
+                    // Update map
+                    updateUserLocationOnMap();
+                    
+                    // Update info text
+                    document.getElementById('locationInfo').classList.remove('alert-info');
+                    document.getElementById('locationInfo').classList.add('alert-success');
+                    document.getElementById('locationText').textContent = 'Location acquired successfully! You can now search for nearby facilities.';
+                    
+                    // Enable the find nearby button
+                    document.getElementById('findNearbyBtn').disabled = false;
+                    
+                    // Get address from coordinates for better UX
+                    reverseGeocode(userLocation);
+                },
+                function(error) {
+                    document.getElementById('locationInfo').classList.remove('alert-info');
+                    document.getElementById('locationInfo').classList.add('alert-danger');
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            document.getElementById('locationText').textContent = 'Location access denied. Please enter your address manually.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            document.getElementById('locationText').textContent = 'Location information unavailable. Please enter your address manually.';
+                            break;
+                        case error.TIMEOUT:
+                            document.getElementById('locationText').textContent = 'Location request timed out. Please enter your address manually.';
+                            break;
+                        default:
+                            document.getElementById('locationText').textContent = 'Unknown error occurred. Please enter your address manually.';
+                            break;
+                    }
+                }
+            );
+        } else {
+            document.getElementById('locationInfo').classList.remove('d-none');
+            document.getElementById('locationInfo').classList.remove('alert-info');
+            document.getElementById('locationInfo').classList.add('alert-danger');
+            document.getElementById('locationText').textContent = 'Geolocation is not supported by this browser. Please enter your address manually.';
+        }
+    });
+    
+    // Handle address search button click
+    document.getElementById('searchAddressBtn').addEventListener('click', function() {
+        const address = document.getElementById('addressInput').value.trim();
+        
+        if (address) {
+            geocodeAddress(address);
+        } else {
+            alert('Please enter an address');
+        }
+    });
+    
+    // Handle address input when Enter key is pressed
+    document.getElementById('addressInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const address = document.getElementById('addressInput').value.trim();
+            
+            if (address) {
+                geocodeAddress(address);
+            } else {
+                alert('Please enter an address');
+            }
+        }
+    });
+    
+    // Geocode address to get coordinates
+    function geocodeAddress(address) {
+        document.getElementById('locationInfo').classList.remove('d-none');
+        document.getElementById('locationInfo').classList.remove('alert-danger');
+        document.getElementById('locationInfo').classList.add('alert-info');
+        document.getElementById('locationText').textContent = 'Finding address...';
+        
+        const geocoder = new google.maps.Geocoder();
+        
+        geocoder.geocode({ 'address': address }, function(results, status) {
+            if (status === 'OK') {
+                userLocation = {
+                    lat: results[0].geometry.location.lat(),
+                    lng: results[0].geometry.location.lng()
+                };
+                
+                // Update map
+                updateUserLocationOnMap();
+                
+                // Update info text
+                document.getElementById('locationInfo').classList.remove('alert-info');
+                document.getElementById('locationInfo').classList.add('alert-success');
+                document.getElementById('locationText').textContent = 'Address found! You can now search for nearby facilities.';
+                
+                // Enable the find nearby button
+                document.getElementById('findNearbyBtn').disabled = false;
+                
+                // Update address input with formatted address
+                document.getElementById('addressInput').value = results[0].formatted_address;
+            } else {
+                document.getElementById('locationInfo').classList.remove('alert-info');
+                document.getElementById('locationInfo').classList.add('alert-danger');
+                document.getElementById('locationText').textContent = 'Could not find address. Please try again with a more specific address.';
+            }
+        });
+    }
+    
+    // Reverse geocode coordinates to get address
+    function reverseGeocode(location) {
+        const geocoder = new google.maps.Geocoder();
+        
+        geocoder.geocode({ 'location': location }, function(results, status) {
+            if (status === 'OK') {
+                if (results[0]) {
+                    document.getElementById('addressInput').value = results[0].formatted_address;
+                }
+            }
+        });
+    }
+    
+    // Update user location on map
+    function updateUserLocationOnMap() {
+        // Clear existing user marker
+        if (userMarker) {
+            userMarker.setMap(null);
+        }
+        
+        // Add marker for user location
+        userMarker = new google.maps.Marker({
+            position: userLocation,
+            map: map,
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 10,
+                fillColor: '#4285F4',
+                fillOpacity: 1,
+                strokeColor: '#ffffff',
+                strokeWeight: 2
+            },
+            title: 'Your Location'
+        });
+        
+        // Center map on user location
+        map.setCenter(userLocation);
+        map.setZoom(13);
+    }
+    
+    // Handle find nearby button click
+    document.getElementById('findNearbyBtn').addEventListener('click', function() {
+        if (!userLocation) {
+            alert('Please set your location first');
+            return;
+        }
+        
+        findNearbyFacilities();
+    });
+    
+    // Find nearby facilities
+    function findNearbyFacilities() {
+        // Clear existing markers
+        clearFacilityMarkers();
+        
+        // Clear route display
+        if (directionsRenderer) {
+            directionsRenderer.setMap(null);
+        }
+        
+        // Clear alternative route polylines
+        clearRoutePolylines();
+        
+        document.getElementById('routeDetails').classList.add('d-none');
+        
+        // Get search parameters
+        const radius = parseInt(document.getElementById('searchRadius').value) * 1000; // Convert to meters
+        const types = [];
+        
+        if (document.getElementById('hospitalCheck').checked) types.push('hospital');
+        if (document.getElementById('cancerCenterCheck').checked) types.push('health');
+        if (document.getElementById('dermatologistCheck').checked) types.push('doctor');
+        
+        if (types.length === 0) {
+            alert('Please select at least one facility type');
+            return;
+        }
+        
+        // Create places service
+        const service = new google.maps.places.PlacesService(map);
+        
+        // Show loading state
+        document.getElementById('facilitiesList').innerHTML = `
+            <div class="alert alert-info">
+                <i class="bi bi-arrow-repeat me-2"></i>
+                Searching for nearby facilities...
+            </div>
+        `;
+        
+        // Process each facility type
+        let completedRequests = 0;
+        let allResults = [];
+        
+        types.forEach(type => {
+            const request = {
+                location: userLocation,
+                radius: radius,
+                type: type
+            };
+            
+            // Add cancer-specific keywords for better results
+            if (type === 'hospital' || type === 'health') {
+                request.keyword = 'cancer center oncology';
+            } else if (type === 'doctor') {
+                request.keyword = 'dermatologist skin cancer';
+            }
+            
+            service.nearbySearch(request, function(results, status, pagination) {
+                completedRequests++;
+                
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    // Add results to master list
+                    allResults = allResults.concat(results);
+                }
+                
+                // If all requests are complete, display results
+                if (completedRequests === types.length) {
+                    displayFacilityResults(allResults);
+                }
+            });
+        });
+    }
+    
+    // Display facility results
+    function displayFacilityResults(results) {
+        // Remove duplicates based on place_id
+        const uniqueResults = Array.from(new Map(results.map(item => [item.place_id, item])).values());
+        
+        // Sort by distance
+        uniqueResults.sort((a, b) => {
+            const distanceA = google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng(userLocation.lat, userLocation.lng),
+                a.geometry.location
+            );
+            
+            const distanceB = google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng(userLocation.lat, userLocation.lng),
+                b.geometry.location
+            );
+            
+            return distanceA - distanceB;
+        });
+        
+        if (uniqueResults.length === 0) {
+            document.getElementById('facilitiesList').innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    No facilities found within the selected radius. Try increasing the search radius or changing the facility types.
+                </div>
+            `;
+            return;
+        }
+        
+        // Create HTML for results
+        let html = `<p class="mb-3">Found ${uniqueResults.length} facilities near your location:</p>`;
+        html += '<div class="list-group facility-list">';
+        
+        uniqueResults.forEach((place, index) => {
+            // Calculate distance in kilometers
+            const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng(userLocation.lat, userLocation.lng),
+                place.geometry.location
+            ) / 1000; // Convert to kilometers
+            
+            html += `
+                <a href="#" class="list-group-item list-group-item-action facility-item" data-place-id="${place.place_id}" data-index="${index}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">${place.name}</h5>
+                        <small class="text-primary">${distance.toFixed(1)} km</small>
+                    </div>
+                    <p class="mb-1">${place.vicinity || 'No address available'}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small>
+                            ${place.rating ? `Rating: ${place.rating} ★ (${place.user_ratings_total} reviews)` : 'No ratings available'}
+                        </small>
+                        <button class="btn btn-sm btn-primary get-directions-btn" data-index="${index}">
+                            <i class="bi bi-signpost-2-fill me-1"></i> Get Directions
+                        </button>
+                    </div>
+                </a>
+            `;
+            
+            // Add marker for this place
+            addFacilityMarker(place, index);
+        });
+        
+        html += '</div>';
+        
+        document.getElementById('facilitiesList').innerHTML = html;
+        
+        // Add event listeners to the facility items
+        document.querySelectorAll('.facility-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Ignore clicks on the Get Directions button (handled separately)
+                if (e.target.closest('.get-directions-btn')) {
+                    return;
+                }
+                
+                const index = parseInt(this.getAttribute('data-index'));
+                const place = uniqueResults[index];
+                
+                // Center map on selected facility
+                map.setCenter(place.geometry.location);
+                map.setZoom(16);
+                
+                // Open info window
+                openInfoWindow(place, index);
+            });
+        });
+        
+        // Add event listeners to the Get Directions buttons
+        document.querySelectorAll('.get-directions-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const index = parseInt(this.getAttribute('data-index'));
+                const place = uniqueResults[index];
+                
+                // Calculate route
+                calculateAndDisplayRoute(place);
+            });
+        });
+    }
+    
+    // Add facility marker to map
+    function addFacilityMarker(place, index) {
+        const marker = new google.maps.Marker({
+            position: place.geometry.location,
+            map: map,
+            title: place.name,
+            label: {
+                text: (index + 1).toString(),
+                color: 'white'
+            },
+            animation: google.maps.Animation.DROP
+        });
+        
+        // Add click listener to marker
+        marker.addListener('click', function() {
+            openInfoWindow(place, index);
+        });
+        
+        facilityMarkers.push(marker);
+    }
+    
+    // Open info window for a facility
+    function openInfoWindow(place, index) {
+        const marker = facilityMarkers[index];
+        
+        // Calculate distance
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng(userLocation.lat, userLocation.lng),
+            place.geometry.location
+        ) / 1000; // Convert to kilometers
+        
+        // Create info window content
+        const content = `
+            <div style="max-width: 300px;">
+                <h5>${place.name}</h5>
+                <p>${place.vicinity || 'No address available'}</p>
+                <p><strong>Distance:</strong> ${distance.toFixed(1)} km</p>
+                ${place.rating ? `<p><strong>Rating:</strong> ${place.rating} ★ (${place.user_ratings_total} reviews)</p>` : ''}
+                <button class="btn btn-sm btn-primary infowindow-directions-btn" data-index="${index}">
+                    <i class="bi bi-signpost-2-fill me-1"></i> Get Directions
+                </button>
+            </div>
+        `;
+        
+        infoWindow.setContent(content);
+        infoWindow.open(map, marker);
+        
+        // Add event listener to the Get Directions button in the info window
+        // This is added after a short delay to ensure the button exists in the DOM
+        setTimeout(function() {
+            const dirButton = document.querySelector('.infowindow-directions-btn');
+            if (dirButton) {
+                dirButton.addEventListener('click', function() {
+                    const btnIndex = parseInt(this.getAttribute('data-index'));
+                    calculateAndDisplayRoute(place);
+                });
+            }
+        }, 100);
+    }
+    
+    // Clear facility markers from map
+    function clearFacilityMarkers() {
+        facilityMarkers.forEach(marker => {
+            marker.setMap(null);
+        });
+        
+        facilityMarkers = [];
+    }
+    
+    // Clear route polylines
+    function clearRoutePolylines() {
+        for (let i = 0; i < routePolylines.length; i++) {
+            routePolylines[i].setMap(null);
+        }
+        routePolylines = [];
+    }
+    
+    // Calculate and display route to a facility
+    function calculateAndDisplayRoute(destination) {
+        if (!userLocation) {
+            alert('Please set your location first');
+            return;
+        }
+        
+        // Get travel mode from selected radio button
+        const travelModeValue = document.querySelector('input[name="travelMode"]:checked').value;
+        const travelMode = google.maps.TravelMode[travelModeValue];
+        
+        // Consider traffic if checkbox is checked
+        const trafficModel = document.getElementById('trafficCheck').checked ? 
+            google.maps.TrafficModel.BEST_GUESS : undefined;
+        
+        // Show alternative routes if checkbox is checked
+        const provideAlternatives = document.getElementById('alternativesCheck').checked;
+        
+        const request = {
+            origin: userLocation,
+            destination: destination.geometry.location,
+            travelMode: travelMode,
+            provideRouteAlternatives: provideAlternatives
+        };
+        
+        // Add traffic model if needed
+        if (travelMode === google.maps.TravelMode.DRIVING && trafficModel) {
+            request.drivingOptions = {
+                departureTime: new Date(),
+                trafficModel: trafficModel
+            };
+        }
+        
+        directionsService.route(request, function(response, status) {
+            if (status === 'OK') {
+                // Clear existing markers
+                clearFacilityMarkers();
+                
+                // Clear any existing route polylines
+                clearRoutePolylines();
+                
+                // Close any open info windows
+                infoWindow.close();
+                
+                if (provideAlternatives && response.routes.length > 1) {
+                    // If we have alternative routes, render the primary one with the DirectionsRenderer
+                    // and the alternates as polylines
+                    
+                    // Display the main route
+                    directionsRenderer.setMap(map);
+                    directionsRenderer.setDirections(response);
+                    directionsRenderer.setRouteIndex(0);
+                    
+                    // Draw alternative routes as polylines
+                    for (let i = 1; i < response.routes.length; i++) {
+                        const route = response.routes[i];
+                        const polyline = new google.maps.Polyline({
+                            path: route.overview_path,
+                            strokeColor: routeColors[i % routeColors.length],
+                            strokeOpacity: 0.6,
+                            strokeWeight: 4
+                        });
+                        
+                        polyline.setMap(map);
+                        routePolylines.push(polyline);
+                    }
+                } else {
+                    // Just display the main route
+                    directionsRenderer.setMap(map);
+                    directionsRenderer.setDirections(response);
+                }
+                
+                // Show route details
+                displayRouteDetails(destination, response);
+            } else {
+                alert('Directions request failed due to ' + status);
+            }
+        });
+    }
+    
+    // Display route details
+    function displayRouteDetails(destination, response) {
+        // Show the route details section
+        document.getElementById('routeDetails').classList.remove('d-none');
+        
+        const mainRoute = response.routes[0];
+        const mainLeg = mainRoute.legs[0];
+        
+        // Populate route info
+        document.getElementById('routeInfo').innerHTML = `
+            <div class="mb-3">
+                <h4>Route to ${destination.name}</h4>
+                <p class="mb-1"><strong>Distance:</strong> ${mainLeg.distance.text}</p>
+                <p class="mb-1"><strong>Estimated Travel Time:</strong> ${mainLeg.duration.text}${mainLeg.duration_in_traffic ? ' (with traffic: ' + mainLeg.duration_in_traffic.text + ')' : ''}</p>
+                <p class="mb-3"><strong>Start:</strong> ${mainLeg.start_address}<br><strong>End:</strong> ${mainLeg.end_address}</p>
+            </div>
+        `;
+        
+        // Show alternative routes if available
+        if (response.routes.length > 1) {
+            let alternativesHtml = '<h5>Alternative Routes</h5>';
+            alternativesHtml += '<div class="list-group mb-4">';
+            
+            // Add the main (recommended) route
+            alternativesHtml += `
+                <a href="#" class="list-group-item list-group-item-action active route-option" data-route-index="0">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1"><span class="badge bg-success me-2">Recommended</span> Route 1</h6>
+                        <small>${mainLeg.distance.text}</small>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-white-50">${mainLeg.duration.text}${mainLeg.duration_in_traffic ? ' (with traffic: ' + mainLeg.duration_in_traffic.text + ')' : ''}</span>
+                        <span class="route-color-indicator" style="display: inline-block; width: 40px; height: 6px; background-color: ${routeColors[0]};"></span>
+                    </div>
+                </a>
+            `;
+            
+            // Add alternative routes
+            for (let i = 1; i < response.routes.length; i++) {
+                const route = response.routes[i];
+                const leg = route.legs[0];
+                
+                alternativesHtml += `
+                    <a href="#" class="list-group-item list-group-item-action route-option" data-route-index="${i}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Route ${i + 1}</h6>
+                            <small>${leg.distance.text}</small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">${leg.duration.text}${leg.duration_in_traffic ? ' (with traffic: ' + leg.duration_in_traffic.text + ')' : ''}</span>
+                            <span class="route-color-indicator" style="display: inline-block; width: 40px; height: 6px; background-color: ${routeColors[i % routeColors.length]};"></span>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            alternativesHtml += '</div>';
+            
+            document.getElementById('routeAlternatives').innerHTML = alternativesHtml;
+            
+            // Add event listeners to route options
+            document.querySelectorAll('.route-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const routeIndex = parseInt(this.getAttribute('data-route-index'));
+                    
+                    // Change active class
+                    document.querySelectorAll('.route-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Update the directions display
+                    if (routeIndex === 0) {
+                        // For primary route, use the directions renderer
+                        directionsRenderer.setRouteIndex(0);
+                        
+                        // Hide all polylines
+                        for (let i = 0; i < routePolylines.length; i++) {
+                            routePolylines[i].setMap(null);
+                        }
+                    } else {
+                        // For alternative route, hide the directions renderer
+                        // and show only the selected polyline
+                        directionsRenderer.setMap(null);
+                        
+                        // Hide all polylines
+                        for (let i = 0; i < routePolylines.length; i++) {
+                            routePolylines[i].setMap(null);
+                        }
+                        
+                        // Show the selected route's polyline
+                        if (routeIndex - 1 < routePolylines.length) {
+                            routePolylines[routeIndex - 1].setMap(map);
+                        }
+                        
+                        // Create markers for start and end points
+                        const route = response.routes[routeIndex];
+                        const leg = route.legs[0];
+                        
+                        // Add new start marker
+                        const startMarker = new google.maps.Marker({
+                            position: leg.start_location,
+                            map: map,
+                            icon: {
+                                url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                                labelOrigin: new google.maps.Point(15, 10)
+                            },
+                            label: {
+                                text: 'A',
+                                color: 'white'
+                            }
+                        });
+                        
+                        // Add new end marker
+                        const endMarker = new google.maps.Marker({
+                            position: leg.end_location,
+                            map: map,
+                            icon: {
+                                url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                                labelOrigin: new google.maps.Point(15, 10)
+                            },
+                            label: {
+                                text: 'B',
+                                color: 'white'
+                            }
+                        });
+                        
+                        // Add markers to the routePolylines array so they get cleaned up
+                        routePolylines.push(startMarker);
+                        routePolylines.push(endMarker);
+                    }
+                    
+                    // Update the directions steps
+                    const selectedRoute = response.routes[routeIndex];
+                    const selectedLeg = selectedRoute.legs[0];
+                    
+                    // Update steps
+                    let stepsHtml = '<h5>Step-by-Step Directions</h5>';
+                    stepsHtml += '<div class="directions-list" style="max-height: 400px; overflow-y: auto;">';
+                    stepsHtml += '<ol class="list-group list-group-numbered">';
+                    
+                    selectedLeg.steps.forEach(step => {
+                        stepsHtml += `
+                            <li class="list-group-item">
+                                <div>${step.instructions}</div>
+                                <div class="small text-muted">${step.distance.text} (about ${step.duration.text})</div>
+                            </li>
+                        `;
+                    });
+                    
+                    stepsHtml += '</ol>';
+                    stepsHtml += '</div>';
+                    
+                    document.getElementById('routeDirections').innerHTML = stepsHtml;
+                });
+            });
+        }
+        
+        // Populate directions steps for the main route
+        let stepsHtml = '<h5>Step-by-Step Directions</h5>';
+        stepsHtml += '<div class="directions-list" style="max-height: 400px; overflow-y: auto;">';
+        stepsHtml += '<ol class="list-group list-group-numbered">';
+        
+        mainLeg.steps.forEach(step => {
+            stepsHtml += `
+                <li class="list-group-item">
+                    <div>${step.instructions}</div>
+                    <div class="small text-muted">${step.distance.text} (about ${step.duration.text})</div>
+                </li>
+            `;
+        });
+        
+        stepsHtml += '</ol>';
+        stepsHtml += '</div>';
+        
+        document.getElementById('routeDirections').innerHTML = stepsHtml;
+    }
+</script>
+
+<!-- Load Google Maps with API key and libraries -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap&libraries=places,geometry&v=weekly"></script>
+{% endblock %}
