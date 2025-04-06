@@ -29,11 +29,11 @@ export default function LoadingPage() {
   useEffect(() => {
     const navigationTimer = setTimeout(() => {
       // If using React Router:
-      navigate('/main') 
+      navigate('/step1') 
       
       // If not using React Router, use window.location instead:
       // window.location.href = '/destination-page'
-    }, 5000)
+    }, 2000)
     
     // Clean up the timer if component unmounts
     return () => clearTimeout(navigationTimer)
