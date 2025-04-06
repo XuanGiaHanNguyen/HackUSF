@@ -12,7 +12,10 @@ import Surland from './components/SurveyLanding'
 
 import LoadingMainPage from './pages/loading/LoadingToMain'
 import HospitalFinder from './pages/map/LocationFinder'
+import SearchLocation from './pages/map/SearchLocation'
 import Survey from './pages/Survey'
+
+import SkinAnalysisResults from './pages/Result'
 
 function App () {
 
@@ -25,7 +28,7 @@ function App () {
       <Routes>
 
         <Route path="/" element={<Landing />}>
-          <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="aboutus" element={<AboutUs />} />
           <Route path="/parent" element={<Surland />} />
         </Route>
 
@@ -36,10 +39,13 @@ function App () {
         <Route path="/loading" element={<LoadingPage />} />
         <Route path="/loadingtomain" element={<LoadingMainPage />} />
 
-        <Route path='/map' element={<HospitalFinder googleMapsApiKey={googleMapsApiKey}/>}/>
+        <Route path='/address' element={<HospitalFinder googleMapsApiKey={googleMapsApiKey}/>}/>
+        <Route path='/map' element={<SearchLocation googleMapsApiKey={googleMapsApiKey}/>}/>
 
         <Route path="/step1" element={<Step1 />}></Route>
         <Route path="/survey" element={<Survey />}></Route>
+
+        <Route path="/result" element={<SkinAnalysisResults />}></Route>
 
       </Routes>
     </BrowserRouter>

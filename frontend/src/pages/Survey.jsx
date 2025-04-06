@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-
 const questions = [
   {
     id: "q1",
@@ -228,7 +226,7 @@ function Survey() {
   if (!showResults) {
     return (
       
-      <div className="min-h-screen bg-gradient-to-b from-neutral-50 to-[rgba(235,228,220,255)] p-4 md:p-8 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-neutral-100 to-[rgba(235,228,220,255)] p-4 md:p-8 flex flex-col items-center justify-center">
         <motion.h1 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
