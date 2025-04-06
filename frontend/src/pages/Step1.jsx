@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import step1bg from '../assets/step1.png';
-import { NextIcon, Icon2Icon } from '../assets/icon';
+import { NextIcon} from '../assets/icon';
 import { useNavigate, Link } from 'react-router-dom';
+import logo from "../assets/logo.png"
 
 const Step1 = () => {
   const [name, setName] = useState('');
@@ -22,7 +23,7 @@ const Step1 = () => {
       {/* Header with brand and home button */}
       <div className="flex flex-row justify-between align-between w-full py-4 pt-6 px-14">
         <div className="flex flex-row gap-2 text-lg font-bold">
-          {Icon2Icon}
+          <img src={logo} alt="SkinIntel Logo" className="h-10 w-auto" />
           <h2 className="font-bold text-3xl text-[#7c5b00]">SkinIntel</h2>
         </div>
         <div className="flex flex-row gap-5">

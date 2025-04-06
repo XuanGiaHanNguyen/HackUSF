@@ -29,7 +29,7 @@ export default function LoadingMainPage() {
   useEffect(() => {
     const navigationTimer = setTimeout(() => {
       // If using React Router:
-      navigate('/results') 
+      navigate('/result') 
       
       // If not using React Router, use window.location instead:
       // window.location.href = '/destination-page'

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import logo from "../../assets/logo.png"
+import { Link } from 'react-router-dom';
 const SearchLocation = ({ googleMapsApiKey }) => {
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [isLocation1Open, setIsLocation1Open] = useState(false);
@@ -55,7 +56,7 @@ const SearchLocation = ({ googleMapsApiKey }) => {
                         geocodeAddress(storedAddress);
                     }
                 }, 500);
-                
+
                 // Clear interval if component unmounts
                 return () => clearInterval(checkGoogleMapsInterval);
             }
@@ -126,7 +127,7 @@ const SearchLocation = ({ googleMapsApiKey }) => {
 
                     setUserLocation(newLocation);
                     setAddressInput(place.formatted_address);
-                    
+
                     // Store in localStorage
                     localStorage.setItem('userAddress', place.formatted_address);
 
@@ -141,7 +142,7 @@ const SearchLocation = ({ googleMapsApiKey }) => {
                     updateUserLocationOnMap(newLocation);
                 });
             }
-            
+
             // If we already have a stored address from localStorage, try to geocode it now
             const storedAddress = localStorage.getItem('userAddress');
             if (storedAddress && !userLocation) {
@@ -228,10 +229,10 @@ const SearchLocation = ({ googleMapsApiKey }) => {
 
                 // Update address input with formatted address
                 setAddressInput(results[0].formatted_address);
-                
+
                 // Store in localStorage
                 localStorage.setItem('userAddress', results[0].formatted_address);
-                
+
                 // Auto-search for facilities
                 findNearbyFacilities(location);
             } else {
@@ -263,7 +264,7 @@ const SearchLocation = ({ googleMapsApiKey }) => {
     // Find nearby facilities
     const findNearbyFacilities = (locationOverride) => {
         const locationToUse = locationOverride || userLocation;
-        
+
         if (!locationToUse || !window.google || !mapRef.current) {
             alert('Please set your location first');
             return;
@@ -612,7 +613,7 @@ const SearchLocation = ({ googleMapsApiKey }) => {
     const handleAddressInputChange = (e) => {
         setAddressInput(e.target.value);
     };
-    
+
     const handleAddressKeyPress = (e) => {
         if (e.key === 'Enter') {
             geocodeAddress(addressInput);
@@ -622,101 +623,111 @@ const SearchLocation = ({ googleMapsApiKey }) => {
     return (
         <div className="bg-[#f9f7f4] min-h-screen p-6">
 
-            <h1 className="text-3xl font-bold mb-2 text-[rgb(141,115,63)]">Find Nearby Cancer Treatment Centers</h1>
-            <p className="text-gray-700 mb-6">Locate specialized cancer treatment facilities near you for early diagnosis and care</p>
+            <div className="flex flex-row justify-between align-between w-full py-4 pt-6 mb-4">
+                <div className="flex flex-row gap-2 text-lg font-bold">
+                    <img src={logo} alt="SkinIntel Logo" className="h-10 w-auto" />
+                    <h2 className="font-bold text-3xl text-[#7c5b00]">SkinIntel</h2>
+                </div>
+                <div className="flex flex-row gap-5">
+                    <div className="bg-[#7c5b00] rounded-lg px-6 py-2 text-sm text-white font-semibold duration-300 shadow-sm transition-transform hover:scale-105 cursor-pointer">
+                        <Link to="/">Home</Link>
+                    </div>
+                </div>
+            </div>
+
 
             <div className="flex flex-col md:flex-row gap-6">
                 {/* Left Column: Search, Filters, and Facilities */}
                 <div className="w-full md:w-1/3">
                     {/* Location Status Section */}
                     <div className="bg-white rounded-lg shadow-md mb-4">
-    {/* Clickable Header */}
-    <div
-        className="bg-[#8d733f] text-white p-3 rounded-lg cursor-pointer flex justify-between items-center"
-        onClick={() => setIsLocationOpen(!isLocationOpen)}
-    >
-        <h3 className="text-xl font-bold">Current Location</h3>
-        <svg
-            className={`w-5 h-5 transform transition-transform duration-200 ${isLocationOpen ? 'rotate-180' : 'rotate-0'}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-        </svg>
-    </div>
-
-    {/* Toggleable Content */}
-    {isLocationOpen && (
-        <div className="p-4">
-            {addressInput ? (
-                <div className="mb-2">
-                    <div className="font-medium text-gray-800">Using address:</div>
-                    <div className="flex justify-between items-center">
-                        <div className="text-gray-600">{addressInput}</div>
-                        <button 
-                            className="text-sm text-blue-500 hover:text-blue-700"
-                            onClick={() => {
-                                document.getElementById('addressInput').focus();
-                            }}
+                        {/* Clickable Header */}
+                        <div
+                            className="bg-[#8d733f] text-white p-3 rounded-lg cursor-pointer flex justify-between items-center"
+                            onClick={() => setIsLocationOpen(!isLocationOpen)}
                         >
-                            Change
-                        </button>
+                            <h3 className="text-xl font-bold">Current Location</h3>
+                            <svg
+                                className={`w-5 h-5 transform transition-transform duration-200 ${isLocationOpen ? 'rotate-180' : 'rotate-0'}`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+
+                        {/* Toggleable Content */}
+                        {isLocationOpen && (
+                            <div className="p-4">
+                                {addressInput ? (
+                                    <div className="mb-2">
+                                        <div className="font-medium text-gray-800">Using address:</div>
+                                        <div className="flex justify-between items-center">
+                                            <div className="text-gray-600">{addressInput}</div>
+                                            <button
+                                                className="text-sm text-blue-500 hover:text-blue-700"
+                                                onClick={() => {
+                                                    document.getElementById('addressInput').focus();
+                                                }}
+                                            >
+                                                Change
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="mb-3 text-gray-600">Loading saved address...</div>
+                                )}
+
+                                <div className="mt-2">
+                                    <div className="flex">
+                                        <input
+                                            type="text"
+                                            id="addressInput"
+                                            value={addressInput}
+                                            onChange={handleAddressInputChange}
+                                            onKeyPress={handleAddressKeyPress}
+                                            className="flex-grow rounded-l border border-gray-300 px-3 py-2"
+                                            placeholder="Change your address"
+                                        />
+                                        <button
+                                            onClick={() => geocodeAddress(addressInput)}
+                                            className="bg-[#d1c4a5] hover:bg-[#4c3015] px-4 py-2 rounded-r border border-l-0 border-gray-300 transition duration-300"
+                                        >
+                                            <svg
+                                                className="w-5 h-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth="2"
+                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {locationStatus.visible && (
+                                    <div className={`mt-3 p-3 rounded-lg ${locationStatus.type === 'success' ? 'bg-green-100 text-green-800' :
+                                        locationStatus.type === 'error' ? 'bg-red-100 text-red-800' :
+                                            'bg-blue-100 text-[#8d733f]'
+                                        }`}>
+                                        <i className={`bi ${locationStatus.type === 'success' ? 'bi-check-circle-fill' :
+                                            locationStatus.type === 'error' ? 'bi-exclamation-circle-fill' :
+                                                'bi-info-circle-fill'
+                                            } mr-2`}></i>
+                                        <span>{locationStatus.message}</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
-                </div>
-            ) : (
-                <div className="mb-3 text-gray-600">Loading saved address...</div>
-            )}
-            
-            <div className="mt-2">
-                <div className="flex">
-                    <input
-                        type="text"
-                        id="addressInput"
-                        value={addressInput}
-                        onChange={handleAddressInputChange}
-                        onKeyPress={handleAddressKeyPress}
-                        className="flex-grow rounded-l border border-gray-300 px-3 py-2"
-                        placeholder="Change your address"
-                    />
-                    <button
-                        onClick={() => geocodeAddress(addressInput)}
-                        className="bg-[#d1c4a5] hover:bg-[#4c3015] px-4 py-2 rounded-r border border-l-0 border-gray-300 transition duration-300"
-                    >
-                        <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                            />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            {locationStatus.visible && (
-                <div className={`mt-3 p-3 rounded-lg ${locationStatus.type === 'success' ? 'bg-green-100 text-green-800' :
-                    locationStatus.type === 'error' ? 'bg-red-100 text-red-800' :
-                        'bg-blue-100 text-[#8d733f]'
-                    }`}>
-                    <i className={`bi ${locationStatus.type === 'success' ? 'bi-check-circle-fill' :
-                        locationStatus.type === 'error' ? 'bi-exclamation-circle-fill' :
-                            'bi-info-circle-fill'
-                        } mr-2`}></i>
-                    <span>{locationStatus.message}</span>
-                </div>
-            )}
-        </div>
-    )}
-</div>
                     {/* Filters Section */}
                     <div className="bg-white rounded-lg shadow-md mb-4">
                         <div className="bg-[#8d733f] text-white p-3 rounded-t-lg">
@@ -845,226 +856,225 @@ const SearchLocation = ({ googleMapsApiKey }) => {
                             <button
                                 onClick={() => findNearbyFacilities()}
                                 disabled={!userLocation}
-                                className={`w-full py-2 px-4 rounded text-white font-medium transition duration-300 ${
-                                    !userLocation
+                                className={`w-full py-2 px-4 rounded text-white font-medium transition duration-300 ${!userLocation
                                         ? 'bg-gray-400 cursor-not-allowed'
                                         : 'bg-[#8d733f] hover:bg-[#4c3015]'
-                                }`}
+                                    }`}
                             >
                                 <i className="bi bi-search mr-2"></i> Find Nearby Facilities
                             </button>
                         </div>
                     </div>
-                    </div>
-                    
-                {/* Right Column: Map and Route Details with Toggle */}
-<div className="w-full md:w-2/3">
-    <div className="bg-[#8d733f] text-white p-3 rounded-t-lg flex justify-between items-center">
-        <h3 className="text-xl font-bold">Directions</h3>
-        <div className="flex items-center space-x-2 bg-[#6b562e] rounded-lg p-1">
-            <button 
-                className={`px-3 py-1 text-sm rounded-lg transition duration-200 ${!isLocation1Open ? 'bg-white text-[#8d733f] font-medium' : 'text-white hover:bg-[#7a632f]'}`}
-                onClick={() => setIsLocation1Open(false)}
-            >
-                <i className="bi bi-map mr-1"></i> Map View
-            </button>
-            <button 
-                className={`px-3 py-1 text-sm rounded-lg transition duration-200 ${isLocation1Open ? 'bg-white text-[#8d733f] font-medium' : 'text-white hover:bg-[#7a632f]'}`}
-                onClick={() => setIsLocation1Open(true)}
-            >
-                <i className="bi bi-list-ul mr-1"></i> List View
-            </button>
-        </div>
-    </div>
-    <div className="flex flex-col md:flex-row">
-        {!isLocation1Open ? (
-            <>
-                {/* Map Section */}
-                <div className="w-full md:w-7/12">
-                    <div className="bg-white rounded-lg shadow-md h-full">
-                        <div className="p-0">
-                            <div
-                                ref={mapContainerRef}
-                                className="w-full h-screen max-h-175"
-                                style={{ height: '700px' }}
-                            ></div>
-                        </div>
-                    </div>
                 </div>
 
-                {/* Route Details Section */}
-                <div className="w-full md:w-5/12">
-                    {routeDetails ? (
-                        <div className="bg-white rounded-lg shadow-md h-full">
-                            <div className="p-4 overflow-y-auto" style={{ maxHeight: '700px' }}>
-                                {/* Route Info */}
-                                <div className="mb-4">
-                                    {routeDetails.routes && routeDetails.routes.length > 0 && (
-                                        <>
-                                            <h4 className="text-lg font-semibold mb-2">
-                                                Route to {routeDetails.request ? routeDetails.request.destination.name : 'Destination'}
-                                            </h4>
-                                            <p className="mb-1">
-                                                <strong>Distance:</strong> {routeDetails.routes[selectedRoute].legs[0].distance.text}
-                                            </p>
-                                            <p className="mb-1">
-                                                <strong>Estimated Travel Time:</strong> {routeDetails.routes[selectedRoute].legs[0].duration.text}
-                                                {routeDetails.routes[selectedRoute].legs[0].duration_in_traffic &&
-                                                    ` (with traffic: ${routeDetails.routes[selectedRoute].legs[0].duration_in_traffic.text})`}
-                                            </p>
-                                            <p className="mb-4">
-                                                <strong>Start:</strong> {routeDetails.routes[selectedRoute].legs[0].start_address}<br />
-                                                <strong>End:</strong> {routeDetails.routes[selectedRoute].legs[0].end_address}
-                                            </p>
-                                        </>
+                {/* Right Column: Map and Route Details with Toggle */}
+                <div className="w-full md:w-2/3">
+                    <div className="bg-[#8d733f] text-white p-3 rounded-t-lg flex justify-between items-center">
+                        <h3 className="text-xl font-bold">Directions</h3>
+                        <div className="flex items-center space-x-2 bg-[#6b562e] rounded-lg p-1">
+                            <button
+                                className={`px-3 py-1 text-sm rounded-lg transition duration-200 ${!isLocation1Open ? 'bg-white text-[#8d733f] font-medium' : 'text-white hover:bg-[#7a632f]'}`}
+                                onClick={() => setIsLocation1Open(false)}
+                            >
+                                <i className="bi bi-map mr-1"></i> Map View
+                            </button>
+                            <button
+                                className={`px-3 py-1 text-sm rounded-lg transition duration-200 ${isLocation1Open ? 'bg-white text-[#8d733f] font-medium' : 'text-white hover:bg-[#7a632f]'}`}
+                                onClick={() => setIsLocation1Open(true)}
+                            >
+                                <i className="bi bi-list-ul mr-1"></i> List View
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row">
+                        {!isLocation1Open ? (
+                            <>
+                                {/* Map Section */}
+                                <div className="w-full md:w-7/12">
+                                    <div className="bg-white rounded-lg shadow-md h-full">
+                                        <div className="p-0">
+                                            <div
+                                                ref={mapContainerRef}
+                                                className="w-full h-screen max-h-175"
+                                                style={{ height: '700px' }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Route Details Section */}
+                                <div className="w-full md:w-5/12">
+                                    {routeDetails ? (
+                                        <div className="bg-white rounded-lg shadow-md h-full">
+                                            <div className="p-4 overflow-y-auto" style={{ maxHeight: '700px' }}>
+                                                {/* Route Info */}
+                                                <div className="mb-4">
+                                                    {routeDetails.routes && routeDetails.routes.length > 0 && (
+                                                        <>
+                                                            <h4 className="text-lg font-semibold mb-2">
+                                                                Route to {routeDetails.request ? routeDetails.request.destination.name : 'Destination'}
+                                                            </h4>
+                                                            <p className="mb-1">
+                                                                <strong>Distance:</strong> {routeDetails.routes[selectedRoute].legs[0].distance.text}
+                                                            </p>
+                                                            <p className="mb-1">
+                                                                <strong>Estimated Travel Time:</strong> {routeDetails.routes[selectedRoute].legs[0].duration.text}
+                                                                {routeDetails.routes[selectedRoute].legs[0].duration_in_traffic &&
+                                                                    ` (with traffic: ${routeDetails.routes[selectedRoute].legs[0].duration_in_traffic.text})`}
+                                                            </p>
+                                                            <p className="mb-4">
+                                                                <strong>Start:</strong> {routeDetails.routes[selectedRoute].legs[0].start_address}<br />
+                                                                <strong>End:</strong> {routeDetails.routes[selectedRoute].legs[0].end_address}
+                                                            </p>
+                                                        </>
+                                                    )}
+                                                </div>
+
+                                                {/* Alternative Routes */}
+                                                {routeDetails.routes && routeDetails.routes.length > 1 && (
+                                                    <div className="mb-6">
+                                                        <h5 className="text-lg font-medium mb-2">Alternative Routes</h5>
+                                                        <div className="space-y-2">
+                                                            {routeDetails.routes.map((route, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                    onClick={() => handleRouteOptionClick(index)}
+                                                                    className={`p-3 rounded-lg border cursor-pointer ${selectedRoute === index
+                                                                        ? 'bg-[#8d733f] text-white border-[#8d733f]'
+                                                                        : 'bg-white text-gray-800 border-gray-200 hover:bg-gray-50'
+                                                                        }`}
+                                                                >
+                                                                    <div className="flex justify-between">
+                                                                        <h6 className="font-medium">
+                                                                            {index === 0 && (
+                                                                                <span className="bg-green-500 text-white text-xs py-1 px-2 rounded mr-2">
+                                                                                    Recommended
+                                                                                </span>
+                                                                            )}
+                                                                            Route {index + 1}
+                                                                        </h6>
+                                                                        <small>{route.legs[0].distance.text}</small>
+                                                                    </div>
+                                                                    <div className="flex justify-between items-center">
+                                                                        <span className={selectedRoute === index ? 'text-white opacity-80' : 'text-gray-500'}>
+                                                                            {route.legs[0].duration.text}
+                                                                            {route.legs[0].duration_in_traffic &&
+                                                                                ` (with traffic: ${route.legs[0].duration_in_traffic.text})`}
+                                                                        </span>
+                                                                        <span
+                                                                            className="inline-block w-10 h-1.5 rounded-full"
+                                                                            style={{ backgroundColor: routeColors[index % routeColors.length] }}
+                                                                        ></span>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Step-by-Step Directions */}
+                                                {routeDetails.routes && routeDetails.routes[selectedRoute] && (
+                                                    <div>
+                                                        <h5 className="text-lg font-medium mb-2">Step-by-Step Directions</h5>
+                                                        <div className="max-h-96 overflow-y-auto">
+                                                            <ol className="border rounded-lg divide-y">
+                                                                {routeDetails.routes[selectedRoute].legs[0].steps.map((step, index) => (
+                                                                    <li key={index} className="p-3">
+                                                                        <div dangerouslySetInnerHTML={{ __html: step.instructions }}></div>
+                                                                        <div className="text-sm text-gray-500">
+                                                                            {step.distance.text} (about {step.duration.text})
+                                                                        </div>
+                                                                    </li>
+                                                                ))}
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-white rounded-lg shadow-md h-full">
+                                            <div className="p-4 flex items-center justify-center h-full">
+                                                <div className="text-center text-gray-500 p-6">
+                                                    <i className="bi bi-signpost-2 text-4xl mb-4 block"></i>
+                                                    <p>Select a facility and click "Get Directions" to view route details.</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
+                            </>
+                        ) : (
+                            /* List View */
+                            <div className="bg-white rounded-lg shadow-md">
+                                <div className="p-4">
+                                    <div className="max-h-96 overflow-y-auto">
+                                        {loadingFacilities ? (
+                                            <div className="bg-blue-100 text-[#8d733f] p-3 rounded-lg">
+                                                <i className="bi bi-arrow-repeat mr-2"></i>
+                                                Searching for nearby facilities...
+                                            </div>
+                                        ) : facilities.length > 0 ? (
+                                            <div>
+                                                <p className="mb-3">Found {facilities.length} facilities near your stored location:</p>
+                                                <div className="space-y-3">
+                                                    {facilities.map((place, index) => {
+                                                        // Calculate distance in kilometers
+                                                        const distance = window.google && window.google.maps && userLocation ?
+                                                            window.google.maps.geometry.spherical.computeDistanceBetween(
+                                                                new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
+                                                                place.geometry.location
+                                                            ) / 1000 : 0; // Convert to kilometers
 
-                                {/* Alternative Routes */}
-                                {routeDetails.routes && routeDetails.routes.length > 1 && (
-                                    <div className="mb-6">
-                                        <h5 className="text-lg font-medium mb-2">Alternative Routes</h5>
-                                        <div className="space-y-2">
-                                            {routeDetails.routes.map((route, index) => (
-                                                <div
-                                                    key={index}
-                                                    onClick={() => handleRouteOptionClick(index)}
-                                                    className={`p-3 rounded-lg border cursor-pointer ${selectedRoute === index
-                                                        ? 'bg-[#8d733f] text-white border-[#8d733f]'
-                                                        : 'bg-white text-gray-800 border-gray-200 hover:bg-gray-50'
-                                                        }`}
-                                                >
-                                                    <div className="flex justify-between">
-                                                        <h6 className="font-medium">
-                                                            {index === 0 && (
-                                                                <span className="bg-green-500 text-white text-xs py-1 px-2 rounded mr-2">
-                                                                    Recommended
-                                                                </span>
-                                                            )}
-                                                            Route {index + 1}
-                                                        </h6>
-                                                        <small>{route.legs[0].distance.text}</small>
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <span className={selectedRoute === index ? 'text-white opacity-80' : 'text-gray-500'}>
-                                                            {route.legs[0].duration.text}
-                                                            {route.legs[0].duration_in_traffic &&
-                                                                ` (with traffic: ${route.legs[0].duration_in_traffic.text})`}
-                                                        </span>
-                                                        <span
-                                                            className="inline-block w-10 h-1.5 rounded-full"
-                                                            style={{ backgroundColor: routeColors[index % routeColors.length] }}
-                                                        ></span>
-                                                    </div>
+                                                        return (
+                                                            <div
+                                                                key={place.place_id}
+                                                                className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer"
+                                                                onClick={() => handleFacilityClick(place, index)}
+                                                            >
+                                                                <div className="flex justify-between">
+                                                                    <h5 className="font-medium">{place.name}</h5>
+                                                                    <span className="text-[#8d733f]">{distance.toFixed(1)} km</span>
+                                                                </div>
+                                                                <p className="text-gray-600 mt-1 mb-2">{place.vicinity || 'No address available'}</p>
+                                                                <div className="flex justify-between items-center">
+                                                                    <small className="text-gray-500">
+                                                                        {place.rating ? `Rating: ${place.rating} ★ (${place.user_ratings_total} reviews)` : 'No ratings available'}
+                                                                    </small>
+                                                                    <button
+                                                                        className="bg-[#8d733f] hover:bg-[#8d733f] text-white py-1 px-3 rounded text-sm transition duration-300"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            calculateAndDisplayRoute(place);
+                                                                        }}
+                                                                    >
+                                                                        <i className="bi bi-signpost-2-fill mr-1"></i> Get Directions
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="bg-blue-100 text-[#8d733f] p-3 rounded-lg">
+                                                <i className="bi bi-info-circle-fill mr-2"></i>
+                                                {localStorage.getItem('userAddress') ?
+                                                    'Use the search filters to find facilities near your stored location.' :
+                                                    'No location found in storage. Please set your location first.'
+                                                }
+                                            </div>
 
-                                {/* Step-by-Step Directions */}
-                                {routeDetails.routes && routeDetails.routes[selectedRoute] && (
-                                    <div>
-                                        <h5 className="text-lg font-medium mb-2">Step-by-Step Directions</h5>
-                                        <div className="max-h-96 overflow-y-auto">
-                                            <ol className="border rounded-lg divide-y">
-                                                {routeDetails.routes[selectedRoute].legs[0].steps.map((step, index) => (
-                                                    <li key={index} className="p-3">
-                                                        <div dangerouslySetInnerHTML={{ __html: step.instructions }}></div>
-                                                        <div className="text-sm text-gray-500">
-                                                            {step.distance.text} (about {step.duration.text})
-                                                        </div>
-                                                    </li>
-                                                ))}
-                                            </ol>
-                                        </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="bg-white rounded-lg shadow-md h-full">
-                            <div className="p-4 flex items-center justify-center h-full">
-                                <div className="text-center text-gray-500 p-6">
-                                    <i className="bi bi-signpost-2 text-4xl mb-4 block"></i>
-                                    <p>Select a facility and click "Get Directions" to view route details.</p>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )
+                        }
+                    </div>
                 </div>
-            </>
-        ) : (
-            /* List View */
-            <div className="bg-white rounded-lg shadow-md">
-            <div className="p-4">
-                <div className="max-h-96 overflow-y-auto">
-                    {loadingFacilities ? (
-                        <div className="bg-blue-100 text-[#8d733f] p-3 rounded-lg">
-                            <i className="bi bi-arrow-repeat mr-2"></i>
-                            Searching for nearby facilities...
-                        </div>
-                    ) : facilities.length > 0 ? (
-                        <div>
-                            <p className="mb-3">Found {facilities.length} facilities near your stored location:</p>
-                            <div className="space-y-3">
-                                {facilities.map((place, index) => {
-                                    // Calculate distance in kilometers
-                                    const distance = window.google && window.google.maps && userLocation ?
-                                        window.google.maps.geometry.spherical.computeDistanceBetween(
-                                            new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
-                                            place.geometry.location
-                                        ) / 1000 : 0; // Convert to kilometers
-        
-                                    return (
-                                        <div
-                                            key={place.place_id}
-                                            className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer"
-                                            onClick={() => handleFacilityClick(place, index)}
-                                        >
-                                            <div className="flex justify-between">
-                                                <h5 className="font-medium">{place.name}</h5>
-                                                <span className="text-[#8d733f]">{distance.toFixed(1)} km</span>
-                                            </div>
-                                            <p className="text-gray-600 mt-1 mb-2">{place.vicinity || 'No address available'}</p>
-                                            <div className="flex justify-between items-center">
-                                                <small className="text-gray-500">
-                                                    {place.rating ? `Rating: ${place.rating} ★ (${place.user_ratings_total} reviews)` : 'No ratings available'}
-                                                </small>
-                                                <button
-                                                    className="bg-[#8d733f] hover:bg-[#8d733f] text-white py-1 px-3 rounded text-sm transition duration-300"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        calculateAndDisplayRoute(place);
-                                                    }}
-                                                >
-                                                    <i className="bi bi-signpost-2-fill mr-1"></i> Get Directions
-                                                </button>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="bg-blue-100 text-[#8d733f] p-3 rounded-lg">
-                            <i className="bi bi-info-circle-fill mr-2"></i>
-                            {localStorage.getItem('userAddress') ? 
-                                'Use the search filters to find facilities near your stored location.' :
-                                'No location found in storage. Please set your location first.'
-                            }
-                        </div>
-                        
-                    )}
-                </div>
-                </div>
-            </div>            
-        )
-    }
-    </div>
-    </div>
-    </div>
-    </div>
+            </div>
+        </div>
     )
 };
 

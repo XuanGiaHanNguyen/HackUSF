@@ -9,7 +9,7 @@ import {
   Info,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Icon2Icon } from "../assets/icon";
+import logo from "../assets/logo.png"
 import { Link } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -108,7 +108,7 @@ const SkinAnalysisResults = () => {
         {/* Header */}
         <div className="flex flex-row justify-between align-between w-full pb-4">
           <div className="flex flex-row gap-2 text-lg font-bold">
-            {Icon2Icon}
+            <img src={logo} alt="SkinIntel Logo" className="h-10 w-auto" />
             <h2 className="font-bold text-3xl text-[#7c5b00]">SkinIntel</h2>
           </div>
           <div className="flex flex-row gap-5">

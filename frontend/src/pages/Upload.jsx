@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import { Upload, ChevronRight } from "lucide-react";
-import { Icon2Icon, InfoIcon } from "../assets/icon";
+import {InfoIcon } from "../assets/icon";
+import logo from "../assets/logo.png"
 
 export default function UploadPic() {
   const [image, setImage] = useState(null);
@@ -55,7 +56,7 @@ export default function UploadPic() {
       <div className="w-full">
         <div className="flex flex-row justify-between align-between w-full pb-2 pt-6 px-14">
           <div className="flex flex-row gap-2 text-lg font-bold">
-            {Icon2Icon}
+            <img src={logo} alt="SkinIntel Logo" className="h-10 w-auto" />
             <h2 className="font-bold text-3xl text-[#7c5b00]">SkinIntel</h2>
           </div>
           <div className="flex flex-row gap-5">

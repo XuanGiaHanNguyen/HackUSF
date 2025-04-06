@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { IconIcon } from "../../assets/icon"
 import { useNavigate } from "react-router-dom" // Import if using React Router
 
 export default function LoadingPage() {
