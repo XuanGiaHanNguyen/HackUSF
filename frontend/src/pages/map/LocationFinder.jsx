@@ -674,8 +674,6 @@ const HospitalFinder = ({ googleMapsApiKey }) => {
                             <h3 className="text-xl font-bold justify-center items-center">Your Location</h3>
                         </div>
                         <div className="p-4">
-                            <p className="mb-3">Allow location access to find cancer centers near you, or enter your location manually.</p>
-
 
                             <button
                                 className="w-full bg-[#8d733f] hover:bg-[#4c3015] text-white py-2 px-4 rounded transition duration-300"
@@ -881,80 +879,17 @@ const HospitalFinder = ({ googleMapsApiKey }) => {
                             <button
                                 onClick={findNearbyFacilities}
                                 disabled={!userLocation}
-                                className={`w-full py-2 px-4 rounded transition duration-300 ${!userLocation
+                                className={`w-full py-2 text-white px-4 rounded transition duration-300 ${!userLocation
                                     ? 'bg-[#8d733f] cursor-not-allowed'
                                     : 'bg-[#8d733f] hover:[#8d733f]'
-
                                     }`}
                             >
-                                <i className="bi bi-search mr-2 "></i> Find Nearby Facilities
+                                <i className="bi bi-search mr-2"></i> Find Nearby Facilities
                             </button>
                         </div>
                     </div>
 
-                    {/* Facilities List Section */}
-                    <div className="bg-white rounded-lg shadow-md">
-                        <div className="bg-[#8d733f] text-white p-3 rounded-t-lg">
-                            <h3 className="text-xl font-bold">Nearby Facilities</h3>
-                        </div>
-                        <div className="p-4">
-                            <div className="max-h-96 overflow-y-auto">
-                                {loadingFacilities ? (
-                                    <div className="bg-blue-100 text-[#8d733f] p-3 rounded-lg">
-                                        <i className="bi bi-arrow-repeat mr-2"></i>
-                                        Searching for nearby facilities...
-                                    </div>
-                                ) : facilities.length > 0 ? (
-                                    <div>
-                                        <p className="mb-3">Found {facilities.length} facilities near your location:</p>
-                                        <div className="space-y-3">
-                                            {facilities.map((place, index) => {
-                                                // Calculate distance in kilometers
-                                                const distance = window.google && window.google.maps ?
-                                                    window.google.maps.geometry.spherical.computeDistanceBetween(
-                                                        new window.google.maps.LatLng(userLocation.lat, userLocation.lng),
-                                                        place.geometry.location
-                                                    ) / 1000 : 0; // Convert to kilometers
-
-                                                return (
-                                                    <div
-                                                        key={place.place_id}
-                                                        className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer"
-                                                        onClick={() => handleFacilityClick(place, index)}
-                                                    >
-                                                        <div className="flex justify-between">
-                                                            <h5 className="font-medium">{place.name}</h5>
-                                                            <span className="text-[#8d733f]">{distance.toFixed(1)} km</span>
-                                                        </div>
-                                                        <p className="text-gray-600 mt-1 mb-2">{place.vicinity || 'No address available'}</p>
-                                                        <div className="flex justify-between items-center">
-                                                            <small className="text-gray-500">
-                                                                {place.rating ? `Rating: ${place.rating} ★ (${place.user_ratings_total} reviews)` : 'No ratings available'}
-                                                            </small>
-                                                            <button
-                                                                className="bg-[#8d733f] hover:bg-[#8d733f] text-white py-1 px-3 rounded text-sm transition duration-300"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    calculateAndDisplayRoute(place);
-                                                                }}
-                                                            >
-                                                                <i className="bi bi-signpost-2-fill mr-1"></i> Get Directions
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="bg-blue-100 text-[#8d733f] p-3 rounded-lg">
-                                        <i className="bi bi-info-circle-fill mr-2"></i>
-                                        Use the search filters to find facilities near you.
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                  
 
                     <div className="text-center mt-4">
                         <a href="/" className="bg-[#8d733f] hover:bg-[#8d733f] text-white py-2 px-4 rounded transition duration-300">

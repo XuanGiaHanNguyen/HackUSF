@@ -12,6 +12,7 @@ import Surland from './components/SurveyLanding'
 
 import LoadingMainPage from './pages/loading/LoadingToMain'
 import HospitalFinder from './pages/map/LocationFinder'
+import Survey from './pages/Survey'
 
 function App () {
 
@@ -38,6 +39,7 @@ function App () {
         <Route path='/map' element={<HospitalFinder googleMapsApiKey={googleMapsApiKey}/>}/>
 
         <Route path="/step1" element={<Step1 />}></Route>
+        <Route path="/survey" element={<Survey />}></Route>
 
       </Routes>
     </BrowserRouter>
